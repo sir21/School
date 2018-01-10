@@ -1,0 +1,3 @@
+[submodule "FrontEnd"]
+	path = FrontEnd
+	url = https://github.com/sir21/School_Front.git

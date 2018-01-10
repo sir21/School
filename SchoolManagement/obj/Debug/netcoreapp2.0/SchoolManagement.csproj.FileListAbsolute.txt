@@ -1,0 +1,8 @@
+C:\Users\sir\source\repos\SchoolManagement\SchoolManagement\bin\Debug\netcoreapp2.0\SchoolManagement.deps.json
+C:\Users\sir\source\repos\SchoolManagement\SchoolManagement\bin\Debug\netcoreapp2.0\SchoolManagement.runtimeconfig.json
+C:\Users\sir\source\repos\SchoolManagement\SchoolManagement\bin\Debug\netcoreapp2.0\SchoolManagement.runtimeconfig.dev.json
+C:\Users\sir\source\repos\SchoolManagement\SchoolManagement\bin\Debug\netcoreapp2.0\SchoolManagement.dll
+C:\Users\sir\source\repos\SchoolManagement\SchoolManagement\obj\Debug\netcoreapp2.0\SchoolManagement.csprojResolveAssemblyReference.cache
+C:\Users\sir\source\repos\SchoolManagement\SchoolManagement\obj\Debug\netcoreapp2.0\SchoolManagement.csproj.CoreCompileInputs.cache
+C:\Users\sir\source\repos\SchoolManagement\SchoolManagement\obj\Debug\netcoreapp2.0\SchoolManagement.AssemblyInfoInputs.cache
+C:\Users\sir\source\repos\SchoolManagement\SchoolManagement\obj\Debug\netcoreapp2.0\SchoolManagement.AssemblyInfo.cs

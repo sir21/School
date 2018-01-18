@@ -17,6 +17,7 @@ namespace SchoolManagement.Models
         public string Guardian { get; set; }
         public DateTime Date { get; set; }
         public string Email { get; set; }
+        public bool AdminPermition { get; set; }
     }
 
     public class Address

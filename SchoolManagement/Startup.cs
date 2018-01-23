@@ -27,6 +27,8 @@ namespace SchoolManagement
 
             var connection = @"Server=(localdb)\MSSQLLocalDB;Database=SchoolDatabase;Trusted_Connection=True";
             services.AddDbContext<StudentContext>(options => options.UseSqlServer(connection));
+
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,6 +52,13 @@ namespace SchoolManagement
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            app.UseCors(builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials()
+            );
         }
     }
 }

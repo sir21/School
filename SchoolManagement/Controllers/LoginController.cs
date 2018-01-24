@@ -50,7 +50,7 @@ namespace SchoolManagement.Controllers
                 LoginRespond loginRespond = await _accountService.LoginServiceAsync(model);
                 string response = JsonConvert.SerializeObject(loginRespond);
                 if (loginRespond.Pass)
-                    return Ok(response);
+                    return Ok(loginRespond);
                 else
                     return BadRequest(response);
             }
@@ -58,6 +58,27 @@ namespace SchoolManagement.Controllers
             {
                 return BadRequest(model);
             }
+        }
+
+        // GET: Login/Logout
+        public ActionResult Logout()
+        {
+            return Ok();
+        }
+
+        // POST: Login/Logout
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<ActionResult> Logout([FromBody] StudentLoginModel model)
+        {
+            if(_accountService.Authenticate(model.Email, model.Password))
+            {
+                await _accountService.LogoutService(model.Email);
+
+                return Ok();
+            }
+
+            return BadRequest();
         }
 
         // GET: Login/Edit/5

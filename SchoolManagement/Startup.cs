@@ -29,6 +29,8 @@ namespace SchoolManagement
             var connection = @"Server=(localdb)\MSSQLLocalDB;Database=SchoolDatabase;Trusted_Connection=True";
             services.AddDbContext<StudentContext>(options => options.UseSqlServer(connection));
 
+            services.AddTransient<StudentDbSeeder>();
+
             services.AddScoped<AccountServices>();
             services.AddScoped<BasicService>();
 
@@ -63,6 +65,14 @@ namespace SchoolManagement
                 .AllowAnyHeader()
                 .AllowCredentials()
             );
+
+            if (env.IsDevelopment())
+            {
+                using(var scope = app.ApplicationServices.CreateScope())
+                {
+                    var seeder = scope.ServiceProvider.GetService<StudentDbSeeder>();
+                }
+            }
         }
     }
 }

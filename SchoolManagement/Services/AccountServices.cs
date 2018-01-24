@@ -50,16 +50,6 @@ namespace SchoolManagement.Services
 
         private async Task<LoginRespond> CheckInfoAsync(StudentLoginModel studentLogin, string passwordEncoded)
         {
-            //Create admin for initial development
-            //User new_user = new User
-            //{
-            //    Email = "sas@mymail.mail",
-            //    Password = Encoder("Pass@123"),
-            //    UserRole = Role.Admin
-            //};
-            //_context.Users.Add(new_user);
-            //await _context.SaveChangesAsync();
-
             var user = _context.Users.SingleOrDefault(i => i.Email == studentLogin.Email);
             if(user.Password == passwordEncoded)
             {
@@ -72,14 +62,17 @@ namespace SchoolManagement.Services
                 };
                 _context.LoginLogs.Add(loginLogger);
                 await _context.SaveChangesAsync();
+                string token = Encoder(DateTime.Now.ToString());
 
                 LoginRespond loginRespond = new LoginRespond
                 {
                     Pass = true,
                     Email = loginLogger.Email,
-                    Token = Encoder(DateTime.Now.ToString()),
+                    Token = token,
                     LoginTime = DateTime.Now
                 };
+
+                await AddTokenLog(loginLogger.Email, token);
 
                 return loginRespond;
             }
@@ -110,6 +103,42 @@ namespace SchoolManagement.Services
             byte[] encode = new byte[word.Length];
             encode = Encoding.UTF8.GetBytes(word);
             return Convert.ToBase64String(encode);
+        }
+
+        private async Task AddTokenLog(string email, string token)
+        {
+            TokenLog tokenLog = new TokenLog
+            {
+                Email = email,
+                Token = token
+            };
+
+            _context.Add(tokenLog);
+            await _context.SaveChangesAsync();
+        }
+
+        public bool Authenticate(string email, string token)
+        {
+            var tokenDB = _context.TokenLogs.SingleOrDefault(i => i.Email == email);
+            if (tokenDB.Token == token)
+                return true;
+            return false;
+        }
+
+        public async Task<bool> LogoutService(string email)
+        {
+            try
+            {
+                var removingToken = _context.TokenLogs.SingleOrDefault(i => i.Email == email);
+                _context.TokenLogs.Remove(removingToken);
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

@@ -9,5 +9,7 @@ namespace SchoolManagement.Interfaces
     public interface IAccountService
     {
         Task<LoginRespond> LoginServiceAsync(StudentLoginModel model);
+        bool Authenticate(string token, string email);
+        Task<bool> LogoutService(string email);
     }
 }

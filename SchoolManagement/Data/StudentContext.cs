@@ -20,5 +20,6 @@ namespace SchoolManagement.Data
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<LoginLogger> LoginLogs { get; set; }
     }
 }

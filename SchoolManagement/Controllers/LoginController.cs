@@ -5,7 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using SchoolManagement.Interfaces;
 using SchoolManagement.Models.StudentModels;
+using SchoolManagement.Services;
 
 namespace SchoolManagement.Controllers
 {
@@ -13,6 +16,12 @@ namespace SchoolManagement.Controllers
     [Route("api/login/[action]")]
     public class LoginController : Controller
     {
+        private IAccountService _accountService;
+
+        public LoginController(AccountServices accountService)
+        {
+            _accountService = accountService;
+        }
         // GET: Login
         public ActionResult Index()
         {
@@ -25,22 +34,25 @@ namespace SchoolManagement.Controllers
             return View();
         }
 
-        // GET: Login/Create
+        // GET: Login/Login
         public ActionResult Login()
         {
             return Ok();
         }
 
-        // POST: Login/Create
+        // POST: Login/Login
         [HttpPost]
         [AllowAnonymous]
-        public ActionResult Login([FromBody] StudentLoginModel model)
+        public async Task<ActionResult> Login([FromBody] StudentLoginModel model)
         {
             try
             {
-                // TODO: Add insert logic here
-
-                return Ok(model);
+                LoginRespond loginRespond = await _accountService.LoginServiceAsync(model);
+                string response = JsonConvert.SerializeObject(loginRespond);
+                if (loginRespond.Pass)
+                    return Ok(response);
+                else
+                    return BadRequest(response);
             }
             catch
             {

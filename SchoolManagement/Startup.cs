@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SchoolManagement.Data;
+using SchoolManagement.Services;
 
 namespace SchoolManagement
 {
@@ -27,6 +28,9 @@ namespace SchoolManagement
 
             var connection = @"Server=(localdb)\MSSQLLocalDB;Database=SchoolDatabase;Trusted_Connection=True";
             services.AddDbContext<StudentContext>(options => options.UseSqlServer(connection));
+
+            services.AddScoped<AccountServices>();
+            services.AddScoped<BasicService>();
 
             services.AddCors();
         }

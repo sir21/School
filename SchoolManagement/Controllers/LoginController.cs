@@ -34,6 +34,19 @@ namespace SchoolManagement.Controllers
             return View();
         }
 
+        // GET: Login/Register
+        public ActionResult Register()
+        {
+            return Ok();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<ActionResult> Register([FromBody] StudentRegisterModel studentRegisterModel)
+        {
+            return Ok();
+        }
+
         // GET: Login/Login
         public ActionResult Login()
         {

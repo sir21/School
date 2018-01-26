@@ -69,10 +69,13 @@ namespace SchoolManagement.Services
                     Pass = true,
                     Email = loginLogger.Email,
                     Token = token,
-                    LoginTime = DateTime.Now
+                    LoginTime = DateTime.Now,
+                    IsAdmin = user.UserRole == Role.Admin ? true : false
                 };
 
-                await AddTokenLog(loginLogger.Email, token);
+                await AddTokenLog(loginLogger.Email, token, user.UserRole);
+
+                user = null;
 
                 return loginRespond;
             }
@@ -105,12 +108,20 @@ namespace SchoolManagement.Services
             return Convert.ToBase64String(encode);
         }
 
-        private async Task AddTokenLog(string email, string token)
+        private async Task AddTokenLog(string email, string token, Role role)
         {
+            var tokenRecord = _context.TokenLogs.SingleOrDefault(i => i.Email == email);
+            if (tokenRecord != null)
+            {
+                tokenRecord.Token = token;
+                _context.TokenLogs.Update(tokenRecord);
+                await _context.SaveChangesAsync();
+            }
             TokenLog tokenLog = new TokenLog
             {
                 Email = email,
-                Token = token
+                Token = token,
+                IsAdmin = role == Role.Admin ? true : false 
             };
 
             _context.Add(tokenLog);
@@ -121,6 +132,16 @@ namespace SchoolManagement.Services
         {
             var tokenDB = _context.TokenLogs.SingleOrDefault(i => i.Email == email);
             if (tokenDB.Token == token)
+                return true;
+            return false;
+        }
+
+        public bool IsAdminAuthenticate(string email, string token)
+        {
+            var tokenDB = _context.TokenLogs.SingleOrDefault(i => i.Email == email);
+            if (tokenDB == null)
+                return false;
+            if (tokenDB.Token == token && tokenDB.IsAdmin)
                 return true;
             return false;
         }

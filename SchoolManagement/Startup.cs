@@ -71,6 +71,8 @@ namespace SchoolManagement
                 using(var scope = app.ApplicationServices.CreateScope())
                 {
                     var seeder = scope.ServiceProvider.GetService<StudentDbSeeder>();
+
+                    seeder.Seed();
                 }
             }
         }

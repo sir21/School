@@ -13,5 +13,7 @@ namespace SchoolManagement.Models.StudentModels
         public string Email { get; set; }
         [Required]
         public string Token { get; set; }
+        [Required]
+        public bool IsAdmin { get; set; }
     }
 }

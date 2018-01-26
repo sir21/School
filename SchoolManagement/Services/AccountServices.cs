@@ -1,5 +1,6 @@
 ﻿using SchoolManagement.Data;
 using SchoolManagement.Interfaces;
+using SchoolManagement.Models;
 using SchoolManagement.Models.Entity;
 using SchoolManagement.Models.StudentModels;
 using System;
@@ -48,6 +49,8 @@ namespace SchoolManagement.Services
             }
         }
 
+        //For login --helper
+        //Generate token and update logs
         private async Task<LoginRespond> CheckInfoAsync(StudentLoginModel studentLogin, string passwordEncoded)
         {
             var user = _context.Users.SingleOrDefault(i => i.Email == studentLogin.Email);
@@ -64,13 +67,21 @@ namespace SchoolManagement.Services
                 await _context.SaveChangesAsync();
                 string token = Encoder(DateTime.Now.ToString());
 
+                var student = _context.Students.SingleOrDefault(i => i.Email == studentLogin.Email);
+                bool isAccepted = false;
+                if (student != null)
+                {
+                    isAccepted = student.AdminPermition == true ? true : false;
+                }
+
                 LoginRespond loginRespond = new LoginRespond
                 {
                     Pass = true,
                     Email = loginLogger.Email,
                     Token = token,
                     LoginTime = DateTime.Now,
-                    IsAdmin = user.UserRole == Role.Admin ? true : false
+                    IsAdmin = user.UserRole == Role.Admin ? true : false,
+                    IsAccepted = isAccepted
                 };
 
                 await AddTokenLog(loginLogger.Email, token, user.UserRole);
@@ -101,6 +112,7 @@ namespace SchoolManagement.Services
             }
         }
 
+        //genarate encryptions
         private string Encoder(string word)
         {
             byte[] encode = new byte[word.Length];
@@ -108,6 +120,7 @@ namespace SchoolManagement.Services
             return Convert.ToBase64String(encode);
         }
 
+        //updated token
         private async Task AddTokenLog(string email, string token, Role role)
         {
             var tokenRecord = _context.TokenLogs.SingleOrDefault(i => i.Email == email);
@@ -128,6 +141,7 @@ namespace SchoolManagement.Services
             await _context.SaveChangesAsync();
         }
 
+        //Authenticate requests from clients using token and email
         public bool Authenticate(string email, string token)
         {
             var tokenDB = _context.TokenLogs.SingleOrDefault(i => i.Email == email);
@@ -136,6 +150,7 @@ namespace SchoolManagement.Services
             return false;
         }
 
+        //check whether request is comming from admin user
         public bool IsAdminAuthenticate(string email, string token)
         {
             var tokenDB = _context.TokenLogs.SingleOrDefault(i => i.Email == email);
@@ -146,6 +161,7 @@ namespace SchoolManagement.Services
             return false;
         }
 
+        //logout function
         public async Task<bool> LogoutService(string email)
         {
             try
@@ -160,6 +176,67 @@ namespace SchoolManagement.Services
             {
                 return false;
             }
+        }
+
+        //registration service funtion
+        public async Task<bool> RegistrationService(StudentRegisterModel registerModel)
+        {
+            try
+            {
+                //validation functions
+                var context = new ValidationContext(registerModel, serviceProvider: null, items: null);
+                var results = new List<ValidationResult>();
+
+                if (Validator.TryValidateObject(registerModel, context, results, true))
+                {
+                    if (CheckEmailAvailability(registerModel.Email)){
+                        if (registerModel.Password != registerModel.ConfirmPassword)
+                            return false;
+                        Student student = new Student
+                        {
+                            FirstName = registerModel.FirstName,
+                            LastName = registerModel.LastName,
+                            Email = registerModel.Email,
+                            Guardian = registerModel.Guardian,
+                            Address = new Address
+                            {
+                                Number = registerModel.Address1,
+                                Street = registerModel.Address2,
+                                Town = registerModel.Address3
+                            },
+                            DateOfBirth = registerModel.DateOfBirth,
+                            AdminPermition = false
+                        };
+                        User user = new User
+                        {
+                            Email = registerModel.Email,
+                            Password = Encoder(registerModel.Password),
+                            UserRole = Role.Student
+                        };
+
+                        _context.Add(student);
+                        _context.Add(user);
+
+                        await _context.SaveChangesAsync();
+
+                        return true;
+                    }
+                }
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        //check if any accounts are available for provided email
+        private bool CheckEmailAvailability(string email)
+        {
+            var user = _context.Users.SingleOrDefault(i => i.Email == email);
+            if (user == null)
+                return true;
+            return false;
         }
     }
 }

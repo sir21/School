@@ -11,5 +11,6 @@ namespace SchoolManagement.Interfaces
         Task<LoginRespond> LoginServiceAsync(StudentLoginModel model);
         bool Authenticate(string token, string email);
         Task<bool> LogoutService(string email);
+        Task<bool> RegistrationService(StudentRegisterModel registerModel);
     }
 }

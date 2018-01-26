@@ -24,10 +24,13 @@ namespace SchoolManagement.Models.StudentModels
         [StringLength(40)]
         public string Guardian { get; set; }
         [Required]
-        public DateTime Date { get; set; }
+        public DateTime DateOfBirth { get; set; }
         [EmailAddress]
         [Required]
         public string Email { get; set; }
-        public bool AdminPermition { get; set; }
+        [Required]
+        public string Password { get; set; }
+        [Required]
+        public string ConfirmPassword { get; set; }
     }
 }

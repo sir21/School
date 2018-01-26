@@ -23,7 +23,7 @@ namespace SchoolManagement.Models
         [StringLength(40)]
         public string Guardian { get; set; }
         [Required]
-        public DateTime Date { get; set; }
+        public DateTime DateOfBirth { get; set; }
         [EmailAddress]
         [Required]
         public string Email { get; set; }
@@ -32,7 +32,7 @@ namespace SchoolManagement.Models
 
     public class Address
     {
-        public int Id { get; set; }]
+        public int Id { get; set; }
         public string Number { get; set; }
         public string Street { get; set; }
         public string Town { get; set; }

@@ -40,11 +40,21 @@ namespace SchoolManagement.Controllers
             return Ok();
         }
 
+        // POST: Login/Register
         [HttpPost]
         [AllowAnonymous]
         public async Task<ActionResult> Register([FromBody] StudentRegisterModel studentRegisterModel)
         {
-            return Ok();
+            try
+            {
+                if (await _accountService.RegistrationService(studentRegisterModel))
+                    return Ok();
+                return BadRequest();
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         // GET: Login/Login
@@ -61,11 +71,10 @@ namespace SchoolManagement.Controllers
             try
             {
                 LoginRespond loginRespond = await _accountService.LoginServiceAsync(model);
-                string response = JsonConvert.SerializeObject(loginRespond);
                 if (loginRespond.Pass)
                     return Ok(loginRespond);
                 else
-                    return BadRequest(response);
+                    return BadRequest(loginRespond);
             }
             catch
             {

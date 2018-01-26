@@ -11,6 +11,7 @@ namespace SchoolManagement.Models.StudentModels
         public string Email { get; set; }
         public string Token { get; set; }
         public bool IsAdmin { get; set; }
+        public bool IsAccepted { get; set; }
         public DateTime LoginTime { get; set; }
     }
 }
